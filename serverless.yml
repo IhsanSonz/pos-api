@@ -5,6 +5,8 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: ap-southeast-1
+  environment:
+    # With the plugin enabled, all variables in .env are automatically imported
 
 functions:
   serverless:
@@ -22,3 +24,7 @@ functions:
 plugins:
   - serverless-offline
   - serverless-plugin-typescript
+  - serverless-dotenv-plugin
+
+package:
+  excludeDevDependencies: true
