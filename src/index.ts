@@ -1,27 +1,32 @@
 import 'dotenv/config';
-import express, { Router } from 'express';
+import cors from 'cors';
+import express from 'express';
 import { connect } from 'mongoose';
 import { handleRoutes } from './router';
 import { errorHandler } from './middlewares/errorHandler';
 
-const startServer = async () => {
+const api = () => {
   const app = express();
-  const PORT = process.env.PORT || 3010;
 
+  app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`);
-  });
+  connect(process.env.MONGO_URI as string)
+    .then(() => console.log('mongoDB Connected'))
+    .catch((err) => console.log(err));
 
-  app.get('/', (req, res) => {
-    res.send('Hello World');
+  app.get('/', (_, res) => {
+    return res.send({
+      message: 'Go Serverless v3.0! Your function executed successfully!',
+    });
   });
 
   app.use('/api', handleRoutes());
 
   app.use(errorHandler);
+
+  return app;
 };
 
-startServer();
+export default api;

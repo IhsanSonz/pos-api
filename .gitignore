@@ -1,4 +1,21 @@
+# package directories
 node_modules
-.env
+jspm_packages
 yarn-error.log
 dist
+.env
+
+# Serverless directories
+.serverless
+
+.build
+
+.nyc_output
+
+coverage
+
+package-lock.json
+
+out-logger.json
+
+.DS_Store

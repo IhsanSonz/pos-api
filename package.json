@@ -4,14 +4,26 @@
   "main": "server.ts",
   "author": "sonz",
   "license": "MIT",
+  "scripts": {
+    "debug": "export SLS_DEBUG=* && node --inspect node_modules/serverless/bin/serverless.js offline"
+  },
   "dependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/mongoose": "^5.11.97",
+    "aws-serverless-express": "^3.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.1.1"
+    "mongoose": "^8.1.1",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-offline": "^13.3.3",
+    "serverless-plugin-typescript": "^2.1.5",
+    "typescript": "^5.3.3"
   }
 }

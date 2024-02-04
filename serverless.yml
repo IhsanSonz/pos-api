@@ -1,0 +1,24 @@
+service: pos-server
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-southeast-1
+
+functions:
+  serverless:
+    handler: server.handler
+    events:
+      - http:
+          path: / # this matches the base path
+          method: ANY
+          cors: true
+      - http:
+          path: /{any+} # this matches any path, the token 'any' doesn't mean anything special
+          method: ANY
+          cors: true
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
