@@ -14,7 +14,7 @@ dist
 
 coverage
 
-package-lock.json
+# package-lock.json
 
 out-logger.json
 
