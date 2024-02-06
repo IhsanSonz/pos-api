@@ -9,7 +9,6 @@ import validateRegisterInput from '../validation/users/register';
 const users = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const allUsers = await User.find({});
-    console.log(allUsers);
     formatResponse(res, allUsers);
   } catch (error: any) {
     next(error);
@@ -25,31 +24,29 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       throw new Error(errors.name || errors.username || errors.password);
     }
 
-    const user = await User.findOne({
-      where: {
-        email: req.body.email,
-      },
+    const checkUser = await User.findOne({
+      username: req.body.username,
     });
 
-    if (user) {
+    if (checkUser) {
       throw new Error('User already exists');
     }
 
     const newUser = new User({
-      data: {
-        name: req.body.name,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 10),
-      },
+      name: req.body.name,
+      username: req.body.username,
+      password: bcrypt.hashSync(req.body.password, 10),
     });
+    const resUser = await newUser.save();
+    const { password, ...user } = resUser.toObject();
 
     const tokenPayload: Jwtpayload = {
       id: newUser.id,
-      email: newUser.email,
+      username: newUser.username,
     };
     const tokens = createUserToken(tokenPayload);
     await updateRefreshToken(newUser.id, tokens.refreshToken);
-    formatResponse(res, { ...newUser, tokens });
+    formatResponse(res, { ...user, tokens });
   } catch (error: any) {
     next(error);
   }

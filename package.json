@@ -5,10 +5,10 @@
   "author": "sonz",
   "license": "MIT",
   "scripts": {
-    "debug": "export SLS_DEBUG=* && node --inspect node_modules/serverless/bin/serverless.js offline"
+    "debug": "export SLS_DEBUG=* && node --inspect /home/ihsan/.nvm/versions/node/v19.4.0/bin/serverless offline start --reloadHandler"
   },
   "dependencies": {
-    "aws-serverless-express": "^3.4.0",
+    "@codegenie/serverless-express": "^4.13.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
@@ -32,7 +32,6 @@
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-prettier": "^5.1.3",
     "prettier": "^3.2.5",
-    "serverless": "^3.38.0",
     "serverless-dotenv-plugin": "^6.0.0",
     "serverless-offline": "^13.3.3",
     "serverless-plugin-typescript": "^2.1.5",

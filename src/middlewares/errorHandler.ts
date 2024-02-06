@@ -6,5 +6,6 @@ export const errorHandler = (err: Error, _req: Request, res: Response, _next: Ne
     res.status(500);
   }
 
+  console.log(err);
   formatResponse(res, err, err.message, false);
 };

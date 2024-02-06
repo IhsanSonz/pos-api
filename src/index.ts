@@ -5,28 +5,24 @@ import { connect } from 'mongoose';
 import { handleRoutes } from './router';
 import { errorHandler } from './middlewares/errorHandler';
 
-const api = () => {
-  const app = express();
+const app = express();
 
-  app.use(cors());
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-  connect(process.env.MONGO_URI as string)
-    .then(() => console.log('mongoDB Connected'))
-    .catch((err) => console.log(err));
+connect(process.env.MONGO_URI as string)
+  .then(() => console.log('mongoDB Connected'))
+  .catch((err) => console.log(err));
 
-  app.get('/', (_, res) => {
-    return res.send({
-      message: 'Go Serverless v3.0! Your function executed successfully!',
-    });
+app.get('/', (_, res) => {
+  return res.send({
+    message: 'Go Serverless v3.0! Your function executed successfully!',
   });
+});
 
-  app.use('/api', handleRoutes());
+app.use('/api', handleRoutes());
 
-  app.use(errorHandler);
+app.use(errorHandler);
 
-  return app;
-};
-
-export default api;
+export { app };

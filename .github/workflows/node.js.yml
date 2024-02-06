@@ -24,6 +24,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn install --frozen-lockfile
+      - name: Set env MONGO_URI
+        run: echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
+      - name: Set env JWT_SECRET
+        run: echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+      - name: Set env JWT_ACCESS_SECRET
+        run: echo "JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }}" >> .env
       - name: serverless deploy
         uses: serverless/github-action@v3
         with:

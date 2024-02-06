@@ -9,42 +9,34 @@ interface RegisterDto {
 }
 
 export default function validateRegisterInput(data: RegisterDto) {
-  let errors: RegisterDto = {
-    name: '',
-    username: '',
-    password: '',
-  };
+  let errors: any = {};
 
   data.name = !isEmpty(data.name) ? data.name : '';
   data.username = !isEmpty(data.username) ? data.username : '';
   data.password = !isEmpty(data.password) ? data.password : '';
 
   if (_isEmpty(data.name as string)) {
-    errors.name = 'Data nama dibutuhkan';
+    errors.name = '(name) Data nama dibutuhkan';
   }
 
   if (_isEmpty(data.username as string)) {
-    errors.username = 'Data Username dibutuhkan';
+    errors.username = '(username) Data Username dibutuhkan';
   }
 
   if (_isEmpty(data.password as string)) {
-    errors.password = 'Data Password dibutuhkan';
+    errors.password = '(password) Data Password dibutuhkan';
   }
 
-  if (!isLength(data.name as string, { min: 3, max: 50 })) {
-    errors.name = 'Nama Harus diantara 3 dan 50 Karakter';
+  if (isEmpty(errors.name) && !isLength(data.name as string, { min: 3, max: 50 })) {
+    errors.name = '(name) Nama Harus diantara 3 dan 50 Karakter';
   }
 
-  if (!isAlphanumeric(data.username as string)) {
-    errors.username = 'Username tidak valid';
+  if (isEmpty(errors.username) && !isAlphanumeric(data.username as string)) {
+    errors.username = '(username) Username harus alphanumeric';
   }
 
-  if (!isLength(data.username as string, { min: 3, max: 50 })) {
-    errors.name = 'Nama Harus diantara 3 dan 50 Karakter';
-  }
-
-  if (!isLength(data.password as string, { min: 6, max: 50 })) {
-    errors.password = 'Password minimal 6 karakter';
+  if (isEmpty(errors.password) && !isLength(data.password as string, { min: 6, max: 50 })) {
+    errors.password = '(password) Password minimal 6 karakter';
   }
 
   return {
