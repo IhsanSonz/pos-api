@@ -6,6 +6,6 @@ export const errorHandler = (err: Error, _req: Request, res: Response, _next: Ne
     res.status(500);
   }
 
-  console.log(err);
+  if (process.env.NODE_ENV == 'development') console.error(err);
   formatResponse(res, err, err.message, false);
 };

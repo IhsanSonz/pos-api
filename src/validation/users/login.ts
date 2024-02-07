@@ -2,22 +2,16 @@ import validator from 'validator';
 import isEmpty from '../is-empty.js';
 const { isLength, isEmpty: _isEmpty, isAlphanumeric } = validator;
 
-interface RegisterDto {
-  name: string;
+interface LoginDto {
   username: string;
   password: string;
 }
 
-export default function validateRegisterInput(data: RegisterDto) {
+export default function validateLoginInput(data: LoginDto) {
   let errors: any = {};
 
-  data.name = !isEmpty(data.name) ? data.name : '';
   data.username = !isEmpty(data.username) ? data.username : '';
   data.password = !isEmpty(data.password) ? data.password : '';
-
-  if (_isEmpty(data.name)) {
-    errors.name = '(name) Data nama dibutuhkan';
-  }
 
   if (_isEmpty(data.username)) {
     errors.username = '(username) Data Username dibutuhkan';
@@ -25,10 +19,6 @@ export default function validateRegisterInput(data: RegisterDto) {
 
   if (_isEmpty(data.password)) {
     errors.password = '(password) Data Password dibutuhkan';
-  }
-
-  if (isEmpty(errors.name) && !isLength(data.name, { min: 3, max: 50 })) {
-    errors.name = '(name) Nama Harus diantara 3 dan 50 Karakter';
   }
 
   if (isEmpty(errors.username) && !isAlphanumeric(data.username)) {
