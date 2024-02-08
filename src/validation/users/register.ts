@@ -1,5 +1,5 @@
 import validator from 'validator';
-import isEmpty from '../is-empty.js';
+import { isEmpty } from '../is-empty';
 const { isLength, isEmpty: _isEmpty, isAlphanumeric } = validator;
 
 interface RegisterDto {

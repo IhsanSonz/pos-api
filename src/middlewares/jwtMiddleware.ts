@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { verifyAccessToken } from '../util/jwt';
+import { verifyAccessToken, verifyRefreshToken } from '../util/jwt';
 import { Jwtpayload } from '../types/jwtPayload';
 import User from '../models/User';
 
@@ -14,7 +14,11 @@ export const jwtMiddleware = async (req: Request, res: Response, next: NextFunct
 
     const token = authHeader.split(' ')[1];
 
-    const payload = verifyAccessToken(token) as Jwtpayload;
+    const payload =
+      req.originalUrl === '/api/auth/refresh'
+        ? (verifyRefreshToken(token) as Jwtpayload)
+        : (verifyAccessToken(token) as Jwtpayload);
+
     if (!payload) {
       res.status(403);
       throw new Error('Forbidden');

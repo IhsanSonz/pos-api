@@ -41,15 +41,18 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
       password: bcrypt.hashSync(req.body.password, 10),
     });
     const user = await newUser.save();
-    delete user.password;
 
     const tokenPayload: Jwtpayload = {
-      id: newUser.id,
-      username: newUser.username,
+      id: user.id,
+      username: user.username,
     };
     const tokens = createUserToken(tokenPayload);
-    await updateRefreshToken(newUser.id, tokens.refreshToken);
-    formatResponse(res, { ...user, tokens }, 'OK');
+    await updateRefreshToken(user.id, tokens.refreshToken);
+
+    let resUser = user.toObject();
+    delete user.password;
+    delete user.refreshToken;
+    formatResponse(res, { ...resUser, tokens });
   } catch (error: any) {
     next(error);
   }
@@ -64,9 +67,9 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       throw new Error(errors.username || errors.password);
     }
 
-    const user = await User.findOne({
+    let user = await User.findOne({
       username: req.body.username,
-    }).then((user) => user?.toObject());
+    });
 
     if (!user) {
       res.status(400);
@@ -85,15 +88,17 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       throw new Error('Password does not match');
     }
 
-    delete user.password;
-
     const tokenPayload: Jwtpayload = {
-      id: user._id.toString(),
+      id: user.id,
       username: user.username,
     };
     const tokens = createUserToken(tokenPayload);
-    await updateRefreshToken(user._id.toString(), tokens.refreshToken);
-    formatResponse(res, { ...user, tokens }, 'OK');
+    await updateRefreshToken(user.id, tokens.refreshToken);
+
+    user = user.toObject();
+    delete user.password;
+    delete user.refreshToken;
+    formatResponse(res, { ...user, tokens });
   } catch (error: any) {
     next(error);
   }
@@ -102,7 +107,32 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await updateRefreshToken(res.locals.user.id);
-    formatResponse(res);
+
+    formatResponse(res, {});
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.findOne({
+      _id: res.locals.user.id as string,
+    });
+
+    if (!user) {
+      res.status(404);
+      throw new Error('User not found');
+    }
+
+    const tokenPayload: Jwtpayload = {
+      id: user.id,
+      username: user.username,
+    };
+    const tokens = createUserToken(tokenPayload);
+    await updateRefreshToken(user.id, tokens.refreshToken);
+
+    formatResponse(res, { tokens });
   } catch (error: any) {
     next(error);
   }
@@ -119,6 +149,7 @@ export const handlleAuthRoutes = () => {
   router.post('/register', register);
   router.post('/login', login);
   router.post('/logout', jwtMiddleware, logout);
+  router.get('/refresh', jwtMiddleware, refreshToken);
 
   return router;
 };
