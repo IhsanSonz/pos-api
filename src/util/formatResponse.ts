@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { ResponseType, ResponseTypeDefault } from '../types/response';
-import { isEmpty } from '../validation/is-empty';
+import validator from '../validation/validator';
 export const formatResponse = <T>(res: Response, data?: T, message?: string, success?: boolean): void => {
   let response = ResponseTypeDefault as ResponseType<T>;
 
@@ -10,7 +10,7 @@ export const formatResponse = <T>(res: Response, data?: T, message?: string, suc
     response = {
       message: message ?? response.message,
       success: success ?? response.success,
-      data: !isEmpty(data) ? data : null,
+      data: !validator.isEmpty(data) ? data : null,
     } as ResponseType<T>;
   }
 

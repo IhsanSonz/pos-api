@@ -4,13 +4,13 @@ import { formatResponse } from '../util/formatResponse';
 import User from '../models/User';
 import { Jwtpayload } from '../types/jwtPayload';
 import { createUserToken } from '../util/jwt';
-import validateRegisterInput from '../validation/users/register';
-import validateLoginInput from '../validation/users/login';
+import validateRegisterInput from '../validation/auth/register';
+import validateLoginInput from '../validation/auth/login';
 import { jwtMiddleware } from '../middlewares/jwtMiddleware';
 
 const users = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const allUsers = await User.find({});
+    const allUsers = await User.find({}).select('name username');
     formatResponse(res, allUsers);
   } catch (error: any) {
     next(error);
@@ -142,7 +142,7 @@ export const updateRefreshToken = async (userId: string, refreshToken?: string) 
   await User.updateOne({ _id: userId }, { refreshToken: refreshToken ?? null });
 };
 
-export const handlleAuthRoutes = () => {
+export const handleAuthRoutes = () => {
   const router = Router();
 
   router.get('/users', users);
