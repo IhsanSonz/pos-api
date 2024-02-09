@@ -1,8 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import Product from '../models/Product';
 import { formatResponse } from '../util/formatResponse';
-import { jwtMiddleware } from '../middlewares/jwtMiddleware';
-import validateStoreInput from '../validation/product/store';
+import { storeValidation } from '../validation/product/store';
 import mongoose from 'mongoose';
 
 const products = async (req: Request, res: Response, next: NextFunction) => {
@@ -34,13 +33,7 @@ const product = async (req: Request, res: Response, next: NextFunction) => {
 
 const store = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { errors, isValid } = validateStoreInput(req.body);
-    console.log(errors);
-
-    if (!isValid) {
-      res.status(400);
-      throw new Error(errors.name || errors.category);
-    }
+    await storeValidation(req);
 
     const product = await Product.create({
       name: req.body.name,

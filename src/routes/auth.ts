@@ -1,12 +1,12 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response, NextFunction, response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { formatResponse } from '../util/formatResponse';
 import User from '../models/User';
 import { Jwtpayload } from '../types/jwtPayload';
 import { createUserToken } from '../util/jwt';
-import validateRegisterInput from '../validation/auth/register';
-import validateLoginInput from '../validation/auth/login';
 import { jwtMiddleware } from '../middlewares/jwtMiddleware';
+import { loginValidation } from '../validation/auth/login';
+import { registerValidation } from '../validation/auth/register';
 
 const users = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -19,12 +19,7 @@ const users = async (req: Request, res: Response, next: NextFunction) => {
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { errors, isValid } = validateRegisterInput(req.body);
-
-    if (!isValid) {
-      res.status(400);
-      throw new Error(errors.name || errors.username || errors.password);
-    }
+    await registerValidation(req);
 
     const checkUser = await User.findOne({
       username: req.body.username,
@@ -60,12 +55,7 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { errors, isValid } = validateLoginInput(req.body);
-
-    if (!isValid) {
-      res.status(400);
-      throw new Error(errors.username || errors.password);
-    }
+    await loginValidation(req);
 
     let user = await User.findOne({
       username: req.body.username,

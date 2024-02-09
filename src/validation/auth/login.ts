@@ -1,27 +1,17 @@
-import validator from '../validator';
-const { isEmpty, isMyEmpty } = validator;
+import { Request } from 'express';
+import { myValidator, MySchema } from '../../util/validator';
 
-interface LoginDto {
-  username: string;
-  password: string;
-}
+const schema: MySchema = {
+  username: {
+    notEmpty: {
+      errorMessage: '(username) Data Username dibutuhkan',
+    },
+  },
+  password: {
+    notEmpty: {
+      errorMessage: '(password) Data Password dibutuhkan',
+    },
+  },
+};
 
-export default function validateLoginInput(data: LoginDto) {
-  let errors: any = {};
-
-  data.username = !isMyEmpty(data.username) ? data.username : '';
-  data.password = !isMyEmpty(data.password) ? data.password : '';
-
-  if (isEmpty(data.username)) {
-    errors.username = '(username) Data Username dibutuhkan';
-  }
-
-  if (isEmpty(data.password)) {
-    errors.password = '(password) Data Password dibutuhkan';
-  }
-
-  return {
-    errors,
-    isValid: isMyEmpty(errors),
-  };
-}
+export const loginValidation = async (req: Request) => await myValidator(req, schema);
