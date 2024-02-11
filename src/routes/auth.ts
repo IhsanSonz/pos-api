@@ -5,8 +5,7 @@ import User from '../models/User';
 import { Jwtpayload } from '../types/jwtPayload';
 import { createUserToken } from '../util/jwt';
 import { jwtMiddleware } from '../middlewares/jwtMiddleware';
-import { loginValidation } from '../validation/auth/login';
-import { registerValidation } from '../validation/auth/register';
+import { loginValidation, registerValidation } from '../validation/auth';
 
 const users = async (req: Request, res: Response, next: NextFunction) => {
   try {

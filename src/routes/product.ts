@@ -1,9 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import Product from '../models/Product';
 import { formatResponse } from '../util/formatResponse';
-import { storeValidation } from '../validation/product/store';
+import { storeValidation, updateValidation } from '../validation/product';
 import mongoose from 'mongoose';
-import { updateValidation } from 'validation/product/update';
 
 const products = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -66,6 +65,24 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const downloadUpsert = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.status(400);
+    formatResponse(res, {}, 'On development', false);
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+const uploadUpsert = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.status(400);
+    formatResponse(res, {}, 'On development', false);
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 const destroy = async (req: Request, res: Response, next: NextFunction) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
@@ -84,6 +101,8 @@ export const handleProductRoutes = () => {
   router.post('/store', store);
   router.put('/:id/update', update);
   router.delete('/:id/destroy', destroy);
+  router.get('/download-upsert', downloadUpsert);
+  router.post('/upload-upsert', uploadUpsert);
 
   return router;
 };
