@@ -82,6 +82,7 @@ export const handleProductRoutes = () => {
   router.get('/all', products);
   router.get('/:id', product);
   router.post('/store', store);
+  router.put('/:id/update', update);
   router.delete('/:id/destroy', destroy);
 
   return router;
