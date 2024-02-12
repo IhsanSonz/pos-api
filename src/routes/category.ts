@@ -1,8 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import Category from '../models/Category';
 import { formatResponse } from '../util/formatResponse';
-import { storeValidation, updateValidation } from '../validation/category';
 import mongoose from 'mongoose';
+import joiMiddleware from '../middlewares/joiMiddleware';
 
 const categories = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,7 +17,7 @@ const categories = async (req: Request, res: Response, next: NextFunction) => {
 const category = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const category = await Category.findOne({
-      id: req.params.id,
+      _id: req.params.id,
     });
 
     if (!category) {
@@ -33,8 +33,6 @@ const category = async (req: Request, res: Response, next: NextFunction) => {
 
 const store = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await storeValidation(req);
-
     const category = await Category.create({
       name: req.body.name,
       category: req.body.category as mongoose.Types.ObjectId,
@@ -48,10 +46,8 @@ const store = async (req: Request, res: Response, next: NextFunction) => {
 
 const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await updateValidation(req);
-
-    const category = await Category.findOneAndUpdate(
-      { _id: req.params.id },
+    const category = await Category.findByIdAndUpdate(
+      req.params.id,
       {
         name: req.body.name,
         category: req.body.category as mongoose.Types.ObjectId,
@@ -65,13 +61,24 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const destroy = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await Category.findByIdAndDelete(req.params.id);
+
+    formatResponse(res, {});
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const handleCategoryRoutes = () => {
   const router = Router();
 
   router.get('/all', categories);
-  router.get('/:id', category);
-  router.post('/store', store);
-  router.put('/:id/update', update);
+  router.get('/:id', joiMiddleware('validate_id', 'params'), category);
+  router.post('/store', joiMiddleware('category.index'), store);
+  router.put('/:id/update', joiMiddleware('validate_id', 'params'), joiMiddleware('category.index'), update);
+  router.delete('/:id/destroy', joiMiddleware('validate_id', 'params'), destroy);
 
   return router;
 };

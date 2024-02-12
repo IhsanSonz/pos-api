@@ -1,20 +1,8 @@
-import { Request } from 'express';
-import { myValidator, MySchema } from '../../util/validator';
+import Joi from 'joi';
 
-const schema: MySchema = {
-  name: {
-    notEmpty: {
-      errorMessage: '(name) Data Name dibutuhkan',
-    },
-  },
-  category: {
-    notEmpty: {
-      errorMessage: '(category) Data Category dibutuhkan',
-    },
-    isValidRef: {
-      errorMessage: '(category) Data Category invalid',
-    },
-  },
-};
+const store = Joi.object({
+  name: Joi.string().required(),
+  category: Joi.string().required(),
+});
 
-export const storeValidation = async (req: Request) => await myValidator(req, schema);
+export { store };

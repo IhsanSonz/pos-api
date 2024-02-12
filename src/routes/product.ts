@@ -1,8 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import Product from '../models/Product';
 import { formatResponse } from '../util/formatResponse';
-import { storeValidation, updateValidation } from '../validation/product';
 import mongoose from 'mongoose';
+import joiMiddleware from '../middlewares/joiMiddleware';
 
 const products = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,7 +17,7 @@ const products = async (req: Request, res: Response, next: NextFunction) => {
 const product = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const product = await Product.findOne({
-      id: req.params.id,
+      _id: req.params.id,
     });
 
     if (!product) {
@@ -33,8 +33,6 @@ const product = async (req: Request, res: Response, next: NextFunction) => {
 
 const store = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await storeValidation(req);
-
     const product = await Product.create({
       name: req.body.name,
       category: req.body.category as mongoose.Types.ObjectId,
@@ -48,10 +46,8 @@ const store = async (req: Request, res: Response, next: NextFunction) => {
 
 const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await updateValidation(req);
-
-    const product = await Product.findOneAndUpdate(
-      { _id: req.params.id },
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
       {
         name: req.body.name,
         category: req.body.category as mongoose.Types.ObjectId,
@@ -97,10 +93,10 @@ export const handleProductRoutes = () => {
   const router = Router();
 
   router.get('/all', products);
-  router.get('/:id', product);
-  router.post('/store', store);
-  router.put('/:id/update', update);
-  router.delete('/:id/destroy', destroy);
+  router.get('/:id', joiMiddleware('validate_id', 'params'), product);
+  router.post('/store', joiMiddleware('product.index'), store);
+  router.put('/:id/update', joiMiddleware('validate_id', 'params'), joiMiddleware('product.index'), update);
+  router.delete('/:id/destroy', joiMiddleware('validate_id', 'params'), destroy);
   router.get('/download-upsert', downloadUpsert);
   router.post('/upload-upsert', uploadUpsert);
 

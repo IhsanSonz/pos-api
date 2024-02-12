@@ -1,4 +1,5 @@
-import { storeValidation } from './store';
-import { updateValidation } from './update';
+import Joi from 'joi';
 
-export { storeValidation, updateValidation };
+export const category = Joi.object({
+  name: Joi.string().min(8).max(256).required(),
+});

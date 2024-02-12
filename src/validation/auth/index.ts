@@ -1,4 +1,4 @@
-import { loginValidation } from './login';
-import { registerValidation } from './register';
+import { login } from './login';
+import { register } from './register';
 
-export { loginValidation, registerValidation };
+export { login, register };

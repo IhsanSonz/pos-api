@@ -1,7 +1,6 @@
 import Joi from 'joi';
 
-const register = Joi.object({
-  name: Joi.string().min(8).max(256).required(),
+export const login = Joi.object({
   username: Joi.string()
     .min(8)
     .max(30)
@@ -10,4 +9,6 @@ const register = Joi.object({
   password: Joi.string().min(8).max(64).alphanum().required(),
 });
 
-export { register };
+export const register = login.append({
+  name: Joi.string().min(8).max(256).required(),
+});

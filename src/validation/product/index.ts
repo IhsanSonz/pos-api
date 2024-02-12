@@ -1,4 +1,4 @@
-import { storeValidation } from './store';
-import { updateValidation } from './update';
+import { store } from './store';
+import { update } from './update';
 
-export { storeValidation, updateValidation };
+export { store, update };

@@ -5,7 +5,7 @@ import User from '../models/User';
 import { Jwtpayload } from '../types/jwtPayload';
 import { createUserToken } from '../util/jwt';
 import { jwtMiddleware } from '../middlewares/jwtMiddleware';
-import { loginValidation, registerValidation } from '../validation/auth';
+import joiMiddleware from '../middlewares/joiMiddleware';
 
 const users = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -18,8 +18,6 @@ const users = async (req: Request, res: Response, next: NextFunction) => {
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await registerValidation(req);
-
     const checkUser = await User.findOne({
       username: req.body.username,
     });
@@ -54,8 +52,6 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
 
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await loginValidation(req);
-
     let user = await User.findOne({
       username: req.body.username,
     });
@@ -135,8 +131,8 @@ export const handleAuthRoutes = () => {
   const router = Router();
 
   router.get('/users', users);
-  router.post('/register', register);
-  router.post('/login', login);
+  router.post('/register', joiMiddleware('auth.register'), register);
+  router.post('/login', joiMiddleware('auth.login'), login);
   router.post('/logout', jwtMiddleware, logout);
   router.get('/refresh', jwtMiddleware, refreshToken);
 
