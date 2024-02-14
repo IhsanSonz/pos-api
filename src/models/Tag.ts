@@ -9,3 +9,7 @@ const TagSchema = new schema({
 });
 
 export default model('tag', TagSchema);
+
+export interface TagTypes {
+  name: string;
+}

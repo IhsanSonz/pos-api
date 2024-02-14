@@ -16,9 +16,7 @@ const products = async (req: Request, res: Response, next: NextFunction) => {
 
 const product = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const product = await Product.findOne({
-      _id: req.params.id,
-    });
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
       res.status(400);

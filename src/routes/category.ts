@@ -16,9 +16,7 @@ const categories = async (req: Request, res: Response, next: NextFunction) => {
 
 const category = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const category = await Category.findOne({
-      _id: req.params.id,
-    });
+    const category = await Category.findById(req.params.id);
 
     if (!category) {
       res.status(400);

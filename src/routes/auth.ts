@@ -101,9 +101,7 @@ const logout = async (req: Request, res: Response, next: NextFunction) => {
 
 const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await User.findOne({
-      _id: res.locals.user.id as string,
-    });
+    const user = await User.findById(res.locals.user.id);
 
     if (!user) {
       res.status(404);
@@ -124,7 +122,7 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
 };
 
 export const updateRefreshToken = async (userId: string, refreshToken?: string) => {
-  await User.updateOne({ _id: userId }, { refreshToken: refreshToken ?? null });
+  await User.findByIdAndUpdate(userId, { refreshToken: refreshToken ?? null });
 };
 
 export const handleAuthRoutes = () => {
