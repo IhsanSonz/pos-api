@@ -1,21 +1,24 @@
 import { Schema, model } from 'mongoose';
 const schema = Schema;
 
-const ProductSchema = new schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  category: {
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
-  tags: [
-    {
-      type: Schema.Types.ObjectId,
-      required: false,
+const ProductSchema = new schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-  ],
-});
+    category: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
+    tags: [
+      {
+        type: Schema.Types.ObjectId,
+        required: false,
+      },
+    ],
+  },
+  { timestamps: true },
+);
 
 export default model('product', ProductSchema);

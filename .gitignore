@@ -4,6 +4,7 @@ jspm_packages
 yarn-error.log
 dist
 .env
+uploads
 
 # Serverless directories
 .serverless
